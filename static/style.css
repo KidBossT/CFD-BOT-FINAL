@@ -1,0 +1,104 @@
+/* General reset and container styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0a0a0a; /* Dark background */
+    color: #d0d0d0; /* Light gray text */
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 500px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    text-align: center;
+    color: #76b900; /* NVIDIA green for the title */
+    margin: 0;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #444;
+}
+
+/* Chat box styling */
+.chat-box {
+    background-color: #1e1e1e;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+#responseContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+/* Message bubbles */
+.message {
+    padding: 12px 15px;
+    border-radius: 20px;
+    max-width: 80%;
+    word-wrap: break-word;
+    font-size: 16px;
+}
+
+.user-message {
+    background-color: #76b900; /* NVIDIA green */
+    color: #0a0a0a;
+    align-self: flex-end;
+}
+
+.bot-message {
+    background-color: #333333;
+    color: #d0d0d0;
+    align-self: flex-start;
+}
+
+/* Typing bar at the bottom */
+.user-input {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border-top: 1px solid #444;
+}
+
+#promptInput {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    background-color: #333333;
+    color: #d0d0d0;
+    font-size: 16px;
+    outline: none;
+}
+
+button {
+    background-color: #76b900;
+    color: #0a0a0a;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #5a8e00;
+}
