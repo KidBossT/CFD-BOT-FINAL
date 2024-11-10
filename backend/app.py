@@ -14,7 +14,14 @@ load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
-CORS(app)
+# Update CORS for your Vercel frontend
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://cfd-bot-final.vercel.app", "http://localhost:3000"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Use environment variables
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-secret-key')
@@ -35,8 +42,11 @@ def chat_with_gpt(conversation):
             model="gpt-3.5-turbo",
             messages=conversation
         )
+        # Add logging for debugging
+        print(f"OpenAI Response: {response.choices[0].message.content}")
         return response.choices[0].message.content.strip()
-    except openai.error.OpenAIError:
+    except openai.error.OpenAIError as e:
+        print(f"OpenAI Error: {str(e)}")
         return "I'm having trouble reaching the server. Please try again later."
 
 def analyze_pressure_map(image):
@@ -94,16 +104,22 @@ def index():
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    global conversation
-    
-    data = request.json
-    user_input = data.get('prompt', '').strip()
+    try:
+        global conversation
+        data = request.json
+        user_input = data.get('prompt', '').strip()
 
-    conversation.append({"role": "user", "content": user_input})
-    response = chat_with_gpt(conversation)
-    conversation.append({"role": "assistant", "content": response})
+        if not user_input:
+            return jsonify({'error': 'No prompt provided'}), 400
 
-    return jsonify(response)
+        conversation.append({"role": "user", "content": user_input})
+        response = chat_with_gpt(conversation)
+        conversation.append({"role": "assistant", "content": response})
+
+        return jsonify(response)
+    except Exception as e:
+        print(f"Error in generate: {str(e)}")  # For debugging
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/analyze-image', methods=['POST'])
 def analyze_image():
@@ -135,8 +151,8 @@ def analyze_image():
         }
         
         return jsonify(combined_result)
-    
     except Exception as e:
+        print(f"Image analysis error: {str(e)}")  # For debugging
         return jsonify({'error': str(e)}), 500
 
 def conduct_cfd_analysis(image):
@@ -163,5 +179,11 @@ def conduct_cfd_analysis(image):
         "message": "CFD analysis completed successfully with summarized pressure values."
     }
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy'}), 200
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    port = int(os.getenv('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
+
