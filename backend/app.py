@@ -90,7 +90,7 @@ def analyze_pressure_map(image):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return jsonify({"message": "API is running"})
 
 @app.route('/generate', methods=['POST'])
 def generate():
