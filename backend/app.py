@@ -16,6 +16,11 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 app = Flask(__name__)
 CORS(app)
 
+# Use environment variables
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-secret-key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///users.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 # Create uploads folder if it doesn't exist
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -159,4 +164,5 @@ def conduct_cfd_analysis(image):
     }
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
