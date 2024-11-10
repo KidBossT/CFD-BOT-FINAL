@@ -105,20 +105,27 @@ def index():
 @app.route('/generate', methods=['POST'])
 def generate():
     try:
+        print("Received request") # Debug log
         global conversation
         data = request.json
+        print(f"Request data: {data}") # Debug log
+        
         user_input = data.get('prompt', '').strip()
+        print(f"User input: {user_input}") # Debug log
 
         if not user_input:
             return jsonify({'error': 'No prompt provided'}), 400
 
         conversation.append({"role": "user", "content": user_input})
+        print(f"Conversation: {conversation}") # Debug log
+        
         response = chat_with_gpt(conversation)
+        print(f"GPT response: {response}") # Debug log
+        
         conversation.append({"role": "assistant", "content": response})
-
         return jsonify(response)
     except Exception as e:
-        print(f"Error in generate: {str(e)}")  # For debugging
+        print(f"Error in generate: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/analyze-image', methods=['POST'])
