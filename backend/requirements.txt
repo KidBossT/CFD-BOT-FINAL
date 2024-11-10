@@ -7,3 +7,6 @@ PyJWT
 openai
 python-dotenv
 Werkzeug
+opencv-python-headless
+numpy
+Pillow
